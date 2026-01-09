@@ -44,7 +44,7 @@ namespace Network
 
         Acceptor::Acceptor(uint16_t port)
         {
-            impl = std::make_unique<Impl::Acceptor>(Impl::Acceptor(port));
+            impl = std::make_unique<Impl::Acceptor>(port);
         }
 
         Acceptor::~Acceptor() {}

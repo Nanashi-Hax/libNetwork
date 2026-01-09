@@ -50,7 +50,6 @@ namespace Network::Tcp::Impl
         int res = ::accept(fd, &addr, &size);
         if(res < 0)
         {
-            ::close(fd);
             throw std::system_error(errno, std::generic_category(), "accept()");
         }
         return Socket(res);
@@ -79,7 +78,6 @@ namespace Network::Tcp::Impl
         int res = ::connect(fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
         if(res < 0)
         {
-            ::close(fd);
             throw std::system_error(errno, std::generic_category(), "connect()");
         }
         Socket socket(fd);

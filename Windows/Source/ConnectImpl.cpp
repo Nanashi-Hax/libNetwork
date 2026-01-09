@@ -11,7 +11,7 @@ namespace Network::Tcp::Impl
     Acceptor::Acceptor(uint16_t port) : port(port)
     {
         s = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        if(s == INVALID_SOCKET) throw std::system_error(WSAGetLastError(), std::generic_category(), "socket()");
+        if(s == INVALID_SOCKET) throw std::system_error(WSAGetLastError(), std::system_category(), "socket()");
 
         sockaddr_in addr;
         std::memset(&addr, 0, sizeof(addr));
@@ -23,14 +23,14 @@ namespace Network::Tcp::Impl
         if(res == SOCKET_ERROR)
         {
             ::closesocket(s);
-            throw std::system_error(WSAGetLastError(), std::generic_category(), "bind()");
+            throw std::system_error(WSAGetLastError(), std::system_category(), "bind()");
         }
 
         res = ::listen(s, 64);
         if(res == SOCKET_ERROR)
         {
             ::closesocket(s);
-            throw std::system_error(WSAGetLastError(), std::generic_category(), "listen()");
+            throw std::system_error(WSAGetLastError(), std::system_category(), "listen()");
         }
     }
 
@@ -44,11 +44,10 @@ namespace Network::Tcp::Impl
         if(s == INVALID_SOCKET) throw std::logic_error("Accepter is dead.");
         sockaddr addr;
         int size = sizeof(addr);
-        int res = ::accept(s, &addr, &size);
-        if(res == SOCKET_ERROR)
+        SOCKET res = ::accept(s, &addr, &size);
+        if(res == INVALID_SOCKET)
         {
-            ::closesocket(s);
-            throw std::system_error(errno, std::generic_category(), "accept()");
+            throw std::system_error(WSAGetLastError(), std::system_category(), "accept()");
         }
         return Socket(res);
     }
@@ -56,7 +55,7 @@ namespace Network::Tcp::Impl
     Connector::Connector(std::string host, uint16_t port) : host(host), port(port)
     {
         s = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        if(s == INVALID_SOCKET) throw std::system_error(errno, std::generic_category(), "socket()");
+        if(s == INVALID_SOCKET) throw std::system_error(WSAGetLastError(), std::system_category(), "socket()");
     }
 
     Connector::~Connector()
@@ -76,8 +75,7 @@ namespace Network::Tcp::Impl
         int res = ::connect(s, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
         if(res < 0)
         {
-            ::closesocket(s);
-            throw std::system_error(errno, std::generic_category(), "connect()");
+            throw std::system_error(WSAGetLastError(), std::system_category(), "connect()");
         }
         Socket socket(s);
         s = INVALID_SOCKET;

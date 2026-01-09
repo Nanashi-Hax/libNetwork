@@ -15,7 +15,7 @@ namespace Network
             int res = WSAStartup(MAKEWORD(2,2), &wsaData);
             if(res != 0)
             {
-                throw std::system_error(res, std::generic_category(), "WSAStartup()");
+                throw std::system_error(res, std::system_category(), "WSAStartup()");
             }
         }
 
@@ -24,7 +24,7 @@ namespace Network
             int res = WSACleanup();
             if(res != 0)
             {
-                throw std::system_error(res, std::generic_category(), "WSACleanup()");
+                throw std::system_error(res, std::system_category(), "WSACleanup()");
             }
         }
     }
@@ -44,7 +44,7 @@ namespace Network
         {
             if(this != &other)
             {
-                if(s >= 0) ::closesocket(s);
+                if(s != INVALID_SOCKET) ::closesocket(s);
                 s = other.s;
                 other.s = INVALID_SOCKET;
             }
@@ -58,7 +58,7 @@ namespace Network
             int res = ::recv(s, reinterpret_cast<char*>(buffer.data()), buffer.size(), 0);
             if(res == SOCKET_ERROR)
             {
-                throw std::system_error(WSAGetLastError(), std::generic_category(), "recv()");
+                throw std::system_error(WSAGetLastError(), std::system_category(), "recv()");
             }
             else if(res == 0)
             {
@@ -77,7 +77,7 @@ namespace Network
             int res = ::send(s, reinterpret_cast<const char*>(buffer.data()), buffer.size(), 0);
             if(res < 0)
             {
-                throw std::system_error(errno, std::generic_category(), "send()");
+                throw std::system_error(WSAGetLastError(), std::system_category(), "send()");
             }
             else if(res == 0)
             {
