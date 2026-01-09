@@ -1,1 +1,5 @@
-# libNetwork
+# API
+
+```cpp
+#include <Network.hpp>
+```
