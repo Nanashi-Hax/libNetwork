@@ -8,6 +8,9 @@
 
 namespace Network
 {
+    void Initialize();
+    void Shutdown();
+
     namespace Tcp
     {
         namespace Impl

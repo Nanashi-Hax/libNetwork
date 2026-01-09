@@ -51,7 +51,6 @@ namespace Network::Tcp::Impl
         if(res < 0)
         {
             ::close(fd);
-            fd = -1;
             throw std::system_error(errno, std::generic_category(), "accept()");
         }
         return Socket(res);
@@ -81,7 +80,6 @@ namespace Network::Tcp::Impl
         if(res < 0)
         {
             ::close(fd);
-            fd = -1;
             throw std::system_error(errno, std::generic_category(), "connect()");
         }
         Socket socket(fd);

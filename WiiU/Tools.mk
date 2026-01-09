@@ -1,4 +1,4 @@
-# Tools.mk
+# Tools.mk for wiiu
 
 # wslbash
 # $1 : command to run in WSL
