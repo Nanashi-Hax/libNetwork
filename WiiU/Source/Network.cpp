@@ -22,6 +22,9 @@ namespace Network
 
         Socket::~Socket() {}
 
+        Socket::Socket(Socket&&) noexcept = default;
+        Socket& Socket::operator=(Socket&&) noexcept = default;
+
         size_t Socket::receive(std::span<std::byte> buffer)
         {
             return impl->receive(buffer);

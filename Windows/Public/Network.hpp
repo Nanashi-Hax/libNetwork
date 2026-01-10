@@ -32,6 +32,9 @@ namespace Network
         public:
             ~Socket();
 
+            Socket(Socket&&) noexcept;
+            Socket& operator=(Socket&&) noexcept;
+
             size_t receive(std::span<std::byte> buffer);
             size_t send(std::span<const std::byte> buffer);
 
