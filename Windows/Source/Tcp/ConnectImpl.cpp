@@ -4,7 +4,7 @@
 #include <cstring>
 #include <system_error>
 
-#include "ConnectImpl.hpp"
+#include "Tcp/ConnectImpl.hpp"
 
 namespace Network::Tcp::Impl
 {
@@ -66,6 +66,7 @@ namespace Network::Tcp::Impl
     Socket Connector::connect()
     {
         if(s == INVALID_SOCKET) throw std::logic_error("Connector is dead.");
+        
         sockaddr_in addr;
         std::memset(&addr, 0, sizeof(addr));
         addr.sin_family = AF_INET;

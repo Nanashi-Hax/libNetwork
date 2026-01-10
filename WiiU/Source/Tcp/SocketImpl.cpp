@@ -7,16 +7,10 @@
 #include <stdexcept>
 #include <system_error>
 
-#include "SocketImpl.hpp"
+#include "Tcp/SocketImpl.hpp"
 
 namespace Network
 {
-    namespace Impl
-    {
-        void Initialize() {}
-        void Shutdown() {}
-    }
-
     namespace Tcp::Impl
     {
         Socket::Socket(int fd) : fd(fd) {}

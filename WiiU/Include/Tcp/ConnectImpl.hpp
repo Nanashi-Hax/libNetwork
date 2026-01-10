@@ -1,6 +1,6 @@
 // ConnectImpl.hpp
 #pragma once
-#include "SocketImpl.hpp"
+#include "Tcp/SocketImpl.hpp"
 
 #include <cstdint>
 #include <string>
@@ -16,7 +16,7 @@ namespace Network::Tcp::Impl
         Socket accept();
 
     private:
-        SOCKET s;
+        int fd;
         uint16_t port;
     };
 
@@ -29,7 +29,7 @@ namespace Network::Tcp::Impl
         Socket connect();
 
     private:
-        SOCKET s;
+        int fd;
         std::string host;
         uint16_t port;
     };

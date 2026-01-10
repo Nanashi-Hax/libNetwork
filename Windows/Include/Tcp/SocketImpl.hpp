@@ -2,15 +2,10 @@
 #pragma once
 
 #include <span>
+#include <winsock2.h>
 
 namespace Network
 {
-    namespace Impl
-    {
-        void Initialize();
-        void Shutdown();
-    }
-
     namespace Tcp::Impl
     {
         class Socket
@@ -19,7 +14,7 @@ namespace Network
             friend class Connector;
 
         public:
-            Socket(int fd);
+            Socket(SOCKET s);
             ~Socket();
 
             Socket(Socket const &) = delete;
@@ -35,7 +30,7 @@ namespace Network
             void sendAll(std::span<const std::byte> buffer);
 
         private:
-            int fd;
+            SOCKET s;
         };
     }
 }

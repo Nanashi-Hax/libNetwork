@@ -71,4 +71,28 @@ namespace Network
             std::unique_ptr<Impl::Connector> impl;
         };
     }
+
+    namespace Udp
+    {
+        namespace Impl
+        {
+            class Socket;
+        }
+
+        class Socket
+        {
+        public:
+            Socket(uint16_t port = 0);
+            ~Socket();
+
+            Socket(Socket&&) noexcept;
+            Socket& operator=(Socket&&) noexcept;
+
+            size_t receiveFrom(std::string& host, uint16_t& port, std::span<std::byte> buffer);
+            size_t sendTo(const std::string host, const uint16_t port, std::span<const std::byte> buffer);
+
+        private:
+            std::unique_ptr<Impl::Socket> impl;
+        };
+    }
 }

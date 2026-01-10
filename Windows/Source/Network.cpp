@@ -1,7 +1,9 @@
 // Network.cpp
 #include "Network.hpp"
-#include "ConnectImpl.hpp"
-#include "SocketImpl.hpp"
+#include "Tcp/ConnectImpl.hpp"
+#include "Tcp/SocketImpl.hpp"
+#include "Udp/SocketImpl.hpp"
+#include "Impl.hpp"
 #include <memory>
 
 namespace Network
@@ -69,6 +71,30 @@ namespace Network
         {
             std::unique_ptr<Impl::Socket> socketImpl = std::make_unique<Impl::Socket>(impl->connect());
             return Socket(std::move(socketImpl));
+        }
+    }
+
+    namespace Udp
+    {
+        Socket::Socket(uint16_t port)
+        {
+            impl = std::make_unique<Impl::Socket>(port);
+        }
+
+        Socket::~Socket() {}
+        
+        Socket::Socket(Socket&&) noexcept = default;
+
+        Socket& Socket::operator=(Socket&&) noexcept = default;
+
+        size_t Socket::receiveFrom(std::string& host, uint16_t& port, std::span<std::byte> buffer)
+        {
+            return impl->receiveFrom(host, port, buffer);
+        }
+
+        size_t Socket::sendTo(const std::string host, const uint16_t port, std::span<const std::byte> buffer)
+        {
+            return impl->sendTo(host, port, buffer);
         }
     }
 }
