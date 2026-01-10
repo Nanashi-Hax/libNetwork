@@ -35,6 +35,8 @@ namespace Network
             Socket(Socket&&) noexcept;
             Socket& operator=(Socket&&) noexcept;
 
+            void setNoDelay(bool enable);
+            
             size_t receive(std::span<std::byte> buffer);
             size_t send(std::span<const std::byte> buffer);
 
@@ -87,6 +89,8 @@ namespace Network
 
             Socket(Socket&&) noexcept;
             Socket& operator=(Socket&&) noexcept;
+
+            void setBroadcast(bool enable);
 
             size_t receiveFrom(std::string& host, uint16_t& port, std::span<std::byte> buffer);
             size_t sendTo(const std::string host, const uint16_t port, std::span<const std::byte> buffer);

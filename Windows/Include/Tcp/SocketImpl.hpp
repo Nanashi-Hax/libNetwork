@@ -23,6 +23,8 @@ namespace Network
             Socket(Socket && other) noexcept;
             Socket& operator=(Socket&& other) noexcept;
 
+            void setNoDelay(bool enable);
+
             size_t receive(std::span<std::byte> buffer);
             size_t send(std::span<const std::byte> buffer);
 

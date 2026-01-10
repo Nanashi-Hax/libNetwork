@@ -27,6 +27,11 @@ namespace Network
         Socket::Socket(Socket&&) noexcept = default;
         Socket& Socket::operator=(Socket&&) noexcept = default;
 
+        void Socket::setNoDelay(bool enable)
+        {
+            impl->setNoDelay(enable);
+        }
+
         size_t Socket::receive(std::span<std::byte> buffer)
         {
             return impl->receive(buffer);
@@ -86,6 +91,11 @@ namespace Network
         Socket::Socket(Socket&&) noexcept = default;
 
         Socket& Socket::operator=(Socket&&) noexcept = default;
+
+        void Socket::setBroadcast(bool enable)
+        {
+            impl->setBroadcast(enable);
+        }
 
         size_t Socket::receiveFrom(std::string& host, uint16_t& port, std::span<std::byte> buffer)
         {

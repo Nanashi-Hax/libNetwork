@@ -51,6 +51,13 @@ namespace Network
             return *this;
         }
 
+        void Socket::setBroadcast(bool enable)
+        {
+            int v = enable ? 1 : 0;
+            int res = setsockopt(fd, SOL_SOCKET, SO_BROADCAST, &v, sizeof(v));
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_BROADCAST)");
+        }
+
         size_t Socket::receiveFrom(std::string& outHost, uint16_t& outPort, std::span<std::byte> buffer)
         {
             if(fd < 0) throw std::logic_error("Socket is dead.");

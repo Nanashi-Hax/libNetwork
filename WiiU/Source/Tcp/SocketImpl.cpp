@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdexcept>
@@ -31,6 +32,13 @@ namespace Network
                 other.fd = -1;
             }
             return *this;
+        }
+
+        void Socket::setNoDelay(bool enable)
+        {
+            int v = enable ? 1 : 0;
+            int res = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &v, sizeof(v));
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(TCP_NODELAY)");
         }
 
         size_t Socket::receive(std::span<std::byte> buffer)

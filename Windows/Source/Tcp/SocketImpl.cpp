@@ -29,6 +29,13 @@ namespace Network
             return *this;
         }
 
+        void Socket::setNoDelay(bool enable)
+        {
+            int v = enable ? 1 : 0;
+            int res = ::setsockopt(s, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<const char*>(&v), sizeof(v));
+            if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(TCP_NODELAY)");
+        }
+
         size_t Socket::receive(std::span<std::byte> buffer)
         {
             if(s == INVALID_SOCKET) throw std::logic_error("Socket is dead.");
