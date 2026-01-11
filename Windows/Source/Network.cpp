@@ -32,6 +32,11 @@ namespace Network
             impl->setNoDelay(enable);
         }
 
+        void Socket::setSendBufferSize(int size)
+        {
+            impl->setSendBufferSize(size);
+        }
+
         size_t Socket::receive(std::span<std::byte> buffer)
         {
             return impl->receive(buffer);
@@ -100,6 +105,11 @@ namespace Network
         void Socket::setBroadcast(bool enable)
         {
             impl->setBroadcast(enable);
+        }
+
+        void Socket::setSendBufferSize(int size)
+        {
+            impl->setSendBufferSize(size);
         }
 
         size_t Socket::receiveFrom(std::string& host, uint16_t& port, std::span<std::byte> buffer)

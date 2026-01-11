@@ -42,7 +42,7 @@ namespace Network
         void Socket::setSendBufferSize(int size)
         {
             int res = setsockopt(s, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const char*>(&size), sizeof(size));
-            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_SNDBUF)");
+            if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(SO_SNDBUF)");
         }
 
         size_t Socket::receive(std::span<std::byte> buffer)
