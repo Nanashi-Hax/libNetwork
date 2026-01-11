@@ -13,7 +13,10 @@ namespace Network
 
         Socket::~Socket()
         {
-            if(s != INVALID_SOCKET) ::closesocket(s);
+            if(s != INVALID_SOCKET)
+            {
+                ::closesocket(s);
+            }
         }
 
         Socket::Socket(Socket && other) noexcept : s(other.s) { other.s = INVALID_SOCKET; }
@@ -92,6 +95,11 @@ namespace Network
                 if (n == 0) throw std::runtime_error("connection closed while sending");
                 buffer = buffer.subspan(n);
             }
+        }
+
+        void Socket::shutdown()
+        {
+            ::shutdown(s, SD_BOTH);
         }
     }
 }

@@ -43,6 +43,8 @@ namespace Network
             void receiveAll(std::span<std::byte> buffer);
             void sendAll(std::span<const std::byte> buffer);
 
+            void shutdown();
+
         private:
             explicit Socket(std::unique_ptr<Impl::Socket> impl);
 
@@ -95,6 +97,8 @@ namespace Network
             size_t receiveFrom(std::string& host, uint16_t& port, std::span<std::byte> buffer);
             size_t sendTo(const std::string host, const uint16_t port, std::span<const std::byte> buffer);
 
+            void shutdown();
+            
         private:
             std::unique_ptr<Impl::Socket> impl;
         };

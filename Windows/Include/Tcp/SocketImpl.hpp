@@ -31,6 +31,8 @@ namespace Network
             void receiveAll(std::span<std::byte> buffer);
             void sendAll(std::span<const std::byte> buffer);
 
+            void shutdown();
+
         private:
             SOCKET s;
         };

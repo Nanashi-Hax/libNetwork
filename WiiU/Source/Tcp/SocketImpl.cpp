@@ -18,7 +18,10 @@ namespace Network
 
         Socket::~Socket()
         {
-            if(fd >= 0) ::close(fd);
+            if(fd >= 0)
+            {
+                ::close(fd);
+            }
         }
 
         Socket::Socket(Socket && other) noexcept : fd(other.fd) { other.fd = -1; }
@@ -97,6 +100,11 @@ namespace Network
                 if (n == 0) throw std::runtime_error("connection closed while sending");
                 buffer = buffer.subspan(n);
             }
+        }
+
+        void Socket::shutdown()
+        {
+            ::shutdown(fd, SHUT_RDWR);
         }
     }
 }

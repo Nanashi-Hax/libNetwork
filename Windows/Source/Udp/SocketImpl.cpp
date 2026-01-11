@@ -31,7 +31,10 @@ namespace Network
 
         Socket::~Socket()
         {
-            if(s >= 0) ::closesocket(s);
+            if(s >= 0)
+            {
+                ::closesocket(s);
+            }
         }
 
         Socket::Socket(Socket && other) noexcept : s(other.s) { other.s = -1; }
@@ -93,6 +96,11 @@ namespace Network
             {
                 return res;
             }
+        }
+
+        void Socket::shutdown()
+        {
+            ::shutdown(s, SD_BOTH);
         }
     }
 }

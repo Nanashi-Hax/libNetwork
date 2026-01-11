@@ -77,6 +77,11 @@ namespace Network
             std::unique_ptr<Impl::Socket> socketImpl = std::make_unique<Impl::Socket>(impl->connect());
             return Socket(std::move(socketImpl));
         }
+
+        void Socket::shutdown()
+        {
+            impl->shutdown();
+        }
     }
 
     namespace Udp
@@ -105,6 +110,11 @@ namespace Network
         size_t Socket::sendTo(const std::string host, const uint16_t port, std::span<const std::byte> buffer)
         {
             return impl->sendTo(host, port, buffer);
+        }
+
+        void Socket::shutdown()
+        {
+            impl->shutdown();
         }
     }
 }

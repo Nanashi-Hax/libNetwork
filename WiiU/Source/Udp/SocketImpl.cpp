@@ -35,7 +35,10 @@ namespace Network
 
         Socket::~Socket()
         {
-            if(fd >= 0) ::close(fd);
+            if(fd >= 0)
+            {
+                ::close(fd);
+            }
         }
 
         Socket::Socket(Socket && other) noexcept : fd(other.fd) { other.fd = -1; }
@@ -97,6 +100,11 @@ namespace Network
             {
                 return res;
             }
+        }
+
+        void Socket::shutdown()
+        {
+            ::shutdown(fd, SHUT_RDWR);
         }
     }
 }
