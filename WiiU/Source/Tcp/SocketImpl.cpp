@@ -10,6 +10,8 @@
 
 #include "Tcp/SocketImpl.hpp"
 
+#include <whb/log.h>
+
 namespace Network
 {
     namespace Tcp::Impl
@@ -44,11 +46,17 @@ namespace Network
             if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(TCP_NODELAY)");
         }
 
+        void Socket::setSendBufferSize(int size)
+        {
+            int res = setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &size, sizeof(size));
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_SNDBUF)");
+        }
+
         size_t Socket::receive(std::span<std::byte> buffer)
         {
             if(fd < 0) throw std::logic_error("Socket is dead.");
 
-            int res = ::recv(fd, buffer.data(), buffer.size(), 0);
+            ssize_t res = ::recv(fd, buffer.data(), buffer.size(), 0);
             if(res < 0)
             {
                 throw std::system_error(errno, std::generic_category(), "recv()");
@@ -67,7 +75,7 @@ namespace Network
         {
             if(fd < 0) throw std::logic_error("Socket is dead.");
 
-            int res = ::send(fd, buffer.data(), buffer.size(), 0);
+            ssize_t res = ::send(fd, buffer.data(), buffer.size(), 0);
             if(res < 0)
             {
                 throw std::system_error(errno, std::generic_category(), "send()");

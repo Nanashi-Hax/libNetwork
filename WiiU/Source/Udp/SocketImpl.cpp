@@ -61,6 +61,12 @@ namespace Network
             if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_BROADCAST)");
         }
 
+        void Socket::setSendBufferSize(int size)
+        {
+            int res = setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &size, sizeof(size));
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_SNDBUF)");
+        }
+
         size_t Socket::receiveFrom(std::string& outHost, uint16_t& outPort, std::span<std::byte> buffer)
         {
             if(fd < 0) throw std::logic_error("Socket is dead.");
