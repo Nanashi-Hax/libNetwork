@@ -22,7 +22,9 @@ namespace Network
             Socket(Socket && other) noexcept;
             Socket& operator=(Socket&& other) noexcept;
 
+            void setNonBlocking(bool enable);
             void setBroadcast(bool enable);
+            void setReceiveBufferSize(int size);
             void setSendBufferSize(int size);
 
             size_t receiveFrom(std::string& outHost, uint16_t& outPort, std::span<std::byte> buffer);

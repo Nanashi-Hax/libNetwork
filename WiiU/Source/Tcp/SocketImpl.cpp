@@ -5,6 +5,7 @@
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <stdexcept>
 #include <system_error>
 
@@ -39,16 +40,48 @@ namespace Network
             return *this;
         }
 
+        void Socket::setNonBlocking(bool enable)
+        {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
+            int flags = ::fcntl(fd, F_GETFL, 0);
+            if (flags < 0) throw std::system_error(errno, std::generic_category(), "fcntl(F_GETFL)");
+
+            if (enable)
+            {
+                flags |= O_NONBLOCK;
+            }
+            else
+            {
+                flags &= ~O_NONBLOCK;
+            }
+
+            int res = ::fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "fcntl(F_SETFL, O_NONBLOCK)");
+        }
+
         void Socket::setNoDelay(bool enable)
         {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
             int v = enable ? 1 : 0;
-            int res = setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &v, sizeof(v));
+            int res = ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &v, sizeof(v));
             if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(TCP_NODELAY)");
+        }
+
+        void Socket::setReceiveBufferSize(int size)
+        {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
+            int res = ::setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &size, sizeof(size));
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_RCVBUF)");
         }
 
         void Socket::setSendBufferSize(int size)
         {
-            int res = setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &size, sizeof(size));
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
+            int res = ::setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &size, sizeof(size));
             if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_SNDBUF)");
         }
 
@@ -92,6 +125,8 @@ namespace Network
 
         void Socket::receiveAll(std::span<std::byte> buffer)
         {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
             while (!buffer.empty())
             {
                 size_t n = receive(buffer);
@@ -102,6 +137,8 @@ namespace Network
 
         void Socket::sendAll(std::span<const std::byte> buffer)
         {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+            
             while (!buffer.empty())
             {
                 size_t n = send(buffer);
@@ -112,6 +149,8 @@ namespace Network
 
         void Socket::shutdown()
         {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
             ::shutdown(fd, SHUT_RDWR);
         }
     }

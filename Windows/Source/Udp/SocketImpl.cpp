@@ -50,11 +50,26 @@ namespace Network
             return *this;
         }
 
+        void Socket::setNonBlocking(bool enable)
+        {
+            if(s == INVALID_SOCKET) throw std::logic_error("Socket is dead.");
+
+            u_long mode = enable ? 1 : 0;
+            int res = ::ioctlsocket(s, FIONBIO, &mode);
+            if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "ioctlsocket(FIONBIO)");
+        }
+
         void Socket::setBroadcast(bool enable)
         {
             int v = enable ? 1 : 0;
             int res = ::setsockopt(s, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char*>(&v), sizeof(v));
             if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(SO_BROADCAST)");
+        }
+
+        void Socket::setReceiveBufferSize(int size)
+        {
+            int res = ::setsockopt(s, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const char*>(&size), sizeof(size));
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_RCVBUF)");
         }
 
         void Socket::setSendBufferSize(int size)

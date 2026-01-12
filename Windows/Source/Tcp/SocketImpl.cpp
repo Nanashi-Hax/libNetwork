@@ -32,6 +32,15 @@ namespace Network
             return *this;
         }
 
+        void Socket::setNonBlocking(bool enable)
+        {
+            if(s == INVALID_SOCKET) throw std::logic_error("Socket is dead.");
+
+            u_long mode = enable ? 1 : 0;
+            int res = ::ioctlsocket(s, FIONBIO, &mode);
+            if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "ioctlsocket(FIONBIO)");
+        }
+
         void Socket::setNoDelay(bool enable)
         {
             int v = enable ? 1 : 0;
@@ -39,9 +48,15 @@ namespace Network
             if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(TCP_NODELAY)");
         }
 
+        void Socket::setReceiveBufferSize(int size)
+        {
+            int res = ::setsockopt(s, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const char*>(&size), sizeof(size));
+            if(res < 0) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(SO_RCVBUF)");
+        }
+
         void Socket::setSendBufferSize(int size)
         {
-            int res = setsockopt(s, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const char*>(&size), sizeof(size));
+            int res = ::setsockopt(s, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const char*>(&size), sizeof(size));
             if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(SO_SNDBUF)");
         }
 

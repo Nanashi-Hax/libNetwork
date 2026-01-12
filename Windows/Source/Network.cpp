@@ -27,9 +27,19 @@ namespace Network
         Socket::Socket(Socket&&) noexcept = default;
         Socket& Socket::operator=(Socket&&) noexcept = default;
 
+        void Socket::setNonBlocking(bool enable)
+        {
+            impl->setNonBlocking(enable);
+        }
+
         void Socket::setNoDelay(bool enable)
         {
             impl->setNoDelay(enable);
+        }
+
+        void Socket::setReceiveBufferSize(int size)
+        {
+            impl->setSendBufferSize(size);
         }
 
         void Socket::setSendBufferSize(int size)
@@ -102,9 +112,19 @@ namespace Network
 
         Socket& Socket::operator=(Socket&&) noexcept = default;
 
+        void Socket::setNonBlocking(bool enable)
+        {
+            impl->setNonBlocking(enable);
+        }
+
         void Socket::setBroadcast(bool enable)
         {
             impl->setBroadcast(enable);
+        }
+
+        void Socket::setReceiveBufferSize(int size)
+        {
+            impl->setSendBufferSize(size);
         }
 
         void Socket::setSendBufferSize(int size)
