@@ -29,9 +29,6 @@ namespace Network
 
             size_t receive(std::span<std::byte> buffer);
             size_t send(std::span<const std::byte> buffer);
-
-            void receiveAll(std::span<std::byte> buffer);
-            void sendAll(std::span<const std::byte> buffer);
             
             void shutdown();
 

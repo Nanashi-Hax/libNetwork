@@ -98,26 +98,6 @@ namespace Network
             }
         }
 
-        void Socket::receiveAll(std::span<std::byte> buffer)
-        {
-            while (!buffer.empty())
-            {
-                size_t n = receive(buffer);
-                if (n == 0) throw std::runtime_error("connection closed while receiving");
-                buffer = buffer.subspan(n);
-            }
-        }
-
-        void Socket::sendAll(std::span<const std::byte> buffer)
-        {
-            while (!buffer.empty())
-            {
-                size_t n = send(buffer);
-                if (n == 0) throw std::runtime_error("connection closed while sending");
-                buffer = buffer.subspan(n);
-            }
-        }
-
         void Socket::shutdown()
         {
             ::shutdown(s, SD_BOTH);

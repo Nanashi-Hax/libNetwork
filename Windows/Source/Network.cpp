@@ -57,16 +57,6 @@ namespace Network
             return impl->send(buffer);
         }
 
-        void Socket::receiveAll(std::span<std::byte> buffer)
-        {
-            impl->receiveAll(buffer);
-        }
-
-        void Socket::sendAll(std::span<const std::byte> buffer)
-        {
-            impl->sendAll(buffer);
-        }
-
         Acceptor::Acceptor(uint16_t port)
         {
             impl = std::make_unique<Impl::Acceptor>(port);
