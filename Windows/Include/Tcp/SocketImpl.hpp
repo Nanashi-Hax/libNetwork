@@ -31,6 +31,9 @@ namespace Network
             size_t receive(std::span<std::byte> buffer);
             size_t send(std::span<const std::byte> buffer);
 
+            bool waitReceive(int timeoutMs);
+            bool waitSend(int timeoutMs);
+
             void shutdown();
 
         private:

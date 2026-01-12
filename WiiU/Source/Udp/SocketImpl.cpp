@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <stdexcept>
 #include <system_error>
 #include <cstring>
@@ -141,10 +142,36 @@ namespace Network
             }
         }
 
+        bool Socket::waitReceive(int timeoutMs)
+        {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
+            pollfd pfd{};
+            pfd.fd = fd;
+            pfd.events = POLLIN;
+
+            int ret = poll(&pfd, 1, timeoutMs);
+            if(ret < 0) throw std::system_error(errno, std::generic_category(), "poll(POLLIN)");
+            return (ret > 0 && (pfd.revents & POLLIN));
+        }
+
+        bool Socket::waitSend(int timeoutMs)
+        {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
+            pollfd pfd{};
+            pfd.fd = fd;
+            pfd.events = POLLOUT;
+
+            int ret = poll(&pfd, 1, timeoutMs);
+            if(ret < 0) throw std::system_error(errno, std::generic_category(), "poll(POLLOUT)");
+            return (ret > 0 && (pfd.revents & POLLOUT));
+        }
+
         void Socket::shutdown()
         {
             if(fd < 0) throw std::logic_error("Socket is dead.");
-            
+
             ::shutdown(fd, SHUT_RDWR);
         }
     }

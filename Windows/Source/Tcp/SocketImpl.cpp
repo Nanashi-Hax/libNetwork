@@ -84,7 +84,7 @@ namespace Network
             if(s == INVALID_SOCKET) throw std::logic_error("Socket is dead.");
 
             int res = ::send(s, reinterpret_cast<const char*>(buffer.data()), buffer.size(), 0);
-            if(res < 0)
+            if(res == SOCKET_ERROR)
             {
                 throw std::system_error(WSAGetLastError(), std::system_category(), "send()");
             }
@@ -96,6 +96,28 @@ namespace Network
             {
                 return res;
             }
+        }
+
+        bool Socket::waitReceive(int timeoutMs)
+        {
+            WSAPOLLFD pfd{};
+            pfd.fd = s;
+            pfd.events = POLLIN;
+
+            int res = WSAPoll(&pfd, 1, timeoutMs);
+            if(res < 0) throw std::system_error(WSAGetLastError(), std::system_category(), "WSAPoll(POLLIN)");
+            return (res > 0 && (pfd.revents & POLLIN));
+        }
+
+        bool Socket::waitSend(int timeoutMs)
+        {
+            WSAPOLLFD pfd{};
+            pfd.fd = s;
+            pfd.events = POLLOUT;
+
+            int res = WSAPoll(&pfd, 1, timeoutMs);
+            if(res < 0) throw std::system_error(WSAGetLastError(), std::system_category(), "WSAPoll(POLLOUT)");
+            return (res > 0 && (pfd.revents & POLLOUT));
         }
 
         void Socket::shutdown()

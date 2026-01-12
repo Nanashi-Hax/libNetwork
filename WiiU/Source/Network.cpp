@@ -57,6 +57,16 @@ namespace Network
             return impl->send(buffer);
         }
 
+        bool Socket::waitReceive(int timeoutMs)
+        {
+            return impl->waitReceive(timeoutMs);
+        }
+        
+        bool Socket::waitSend(int timeoutMs)
+        {
+            return impl->waitSend(timeoutMs);
+        }
+
         Acceptor::Acceptor(uint16_t port)
         {
             impl = std::make_unique<Impl::Acceptor>(port);
@@ -130,6 +140,16 @@ namespace Network
         size_t Socket::sendTo(const std::string host, const uint16_t port, std::span<const std::byte> buffer)
         {
             return impl->sendTo(host, port, buffer);
+        }
+
+        bool Socket::waitReceive(int timeoutMs)
+        {
+            return impl->waitReceive(timeoutMs);
+        }
+        
+        bool Socket::waitSend(int timeoutMs)
+        {
+            return impl->waitSend(timeoutMs);
         }
 
         void Socket::shutdown()

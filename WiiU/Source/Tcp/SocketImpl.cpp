@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <stdexcept>
 #include <system_error>
 
@@ -121,6 +122,32 @@ namespace Network
             {
                 return res;
             }
+        }
+
+        bool Socket::waitReceive(int timeoutMs)
+        {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
+            pollfd pfd{};
+            pfd.fd = fd;
+            pfd.events = POLLIN;
+
+            int res = poll(&pfd, 1, timeoutMs);
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "poll(POLLIN)");
+            return (res > 0 && (pfd.revents & POLLIN));
+        }
+
+        bool Socket::waitSend(int timeoutMs)
+        {
+            if(fd < 0) throw std::logic_error("Socket is dead.");
+
+            pollfd pfd{};
+            pfd.fd = fd;
+            pfd.events = POLLOUT;
+
+            int res = poll(&pfd, 1, timeoutMs);
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "poll(POLLOUT)");
+            return (res > 0 && (pfd.revents & POLLOUT));
         }
 
         void Socket::shutdown()

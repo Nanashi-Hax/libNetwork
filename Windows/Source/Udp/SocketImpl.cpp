@@ -119,6 +119,28 @@ namespace Network
             }
         }
 
+        bool Socket::waitReceive(int timeoutMs)
+        {
+            WSAPOLLFD pfd{};
+            pfd.fd = s;
+            pfd.events = POLLIN;
+
+            int res = WSAPoll(&pfd, 1, timeoutMs);
+            if(res < 0) throw std::system_error(WSAGetLastError(), std::system_category(), "WSAPoll(POLLIN)");
+            return (res > 0 && (pfd.revents & POLLIN));
+        }
+
+        bool Socket::waitSend(int timeoutMs)
+        {
+            WSAPOLLFD pfd{};
+            pfd.fd = s;
+            pfd.events = POLLOUT;
+
+            int res = WSAPoll(&pfd, 1, timeoutMs);
+            if(res < 0) throw std::system_error(WSAGetLastError(), std::system_category(), "WSAPoll(POLLOUT)");
+            return (res > 0 && (pfd.revents & POLLOUT));
+        }
+
         void Socket::shutdown()
         {
             ::shutdown(s, SD_BOTH);
