@@ -9,7 +9,12 @@ namespace Network
 {
     namespace Tcp::Impl
     {
-        Socket::Socket(SOCKET s) : s(s) {}
+        Socket::Socket(SOCKET s) : s(s)
+        {
+            int opt = 1;
+            int res = ::setsockopt(s, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
+            if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(SO_REUSEADDR)");
+        }
 
         Socket::~Socket()
         {

@@ -27,6 +27,10 @@ namespace Network
                 ::closesocket(s);
                 throw std::system_error(errno, std::generic_category(), "bind()");
             }
+
+            int opt = 1;
+            res = ::setsockopt(s, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
+            if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(SO_REUSEADDR)");
         }
 
         Socket::~Socket()
