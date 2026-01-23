@@ -67,6 +67,11 @@ namespace Network
             return impl->waitSend(timeoutMs);
         }
 
+        void Socket::shutdown()
+        {
+            impl->shutdown();
+        }
+
         Acceptor::Acceptor(uint16_t port)
         {
             impl = std::make_unique<Impl::Acceptor>(port);
@@ -78,6 +83,11 @@ namespace Network
         {
             std::unique_ptr<Impl::Socket> socketImpl = std::make_unique<Impl::Socket>(impl->accept());
             return Socket(std::move(socketImpl));
+        }
+
+        void Acceptor::shutdown()
+        {
+            impl->shutdown();
         }
 
         Connector::Connector(std::string host, uint16_t port)
@@ -93,7 +103,7 @@ namespace Network
             return Socket(std::move(socketImpl));
         }
 
-        void Socket::shutdown()
+        void Connector::shutdown()
         {
             impl->shutdown();
         }

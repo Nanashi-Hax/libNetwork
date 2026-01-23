@@ -14,6 +14,7 @@ namespace Network::Tcp::Impl
         ~Acceptor();
 
         Socket accept();
+        void shutdown();
 
     private:
         SOCKET s;
@@ -27,6 +28,7 @@ namespace Network::Tcp::Impl
         ~Connector();
 
         Socket connect();
+        void shutdown();
 
     private:
         SOCKET s;

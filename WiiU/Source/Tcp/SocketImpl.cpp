@@ -137,7 +137,7 @@ namespace Network
             pfd.fd = fd;
             pfd.events = POLLIN;
 
-            int res = poll(&pfd, 1, timeoutMs);
+            int res = ::poll(&pfd, 1, timeoutMs);
             if(res < 0) throw std::system_error(errno, std::generic_category(), "poll(POLLIN)");
             return (res > 0 && (pfd.revents & POLLIN));
         }
@@ -150,7 +150,7 @@ namespace Network
             pfd.fd = fd;
             pfd.events = POLLOUT;
 
-            int res = poll(&pfd, 1, timeoutMs);
+            int res = ::poll(&pfd, 1, timeoutMs);
             if(res < 0) throw std::system_error(errno, std::generic_category(), "poll(POLLOUT)");
             return (res > 0 && (pfd.revents & POLLOUT));
         }

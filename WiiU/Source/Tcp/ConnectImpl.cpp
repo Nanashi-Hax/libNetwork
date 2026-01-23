@@ -55,6 +55,13 @@ namespace Network::Tcp::Impl
         return Socket(res);
     }
 
+    void Acceptor::shutdown()
+    {
+        if(fd < 0) throw std::logic_error("Acceptor is dead.");
+
+        ::shutdown(fd, SHUT_RDWR);
+    }
+
     Connector::Connector(std::string host, uint16_t port) : host(host), port(port)
     {
         fd = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -83,5 +90,12 @@ namespace Network::Tcp::Impl
         Socket socket(fd);
         fd = -1;
         return socket;
+    }
+
+    void Connector::shutdown()
+    {
+        if(fd < 0) throw std::logic_error("Connector is dead.");
+
+        ::shutdown(fd, SHUT_RDWR);
     }
 }

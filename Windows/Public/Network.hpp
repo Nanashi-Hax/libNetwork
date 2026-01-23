@@ -61,6 +61,7 @@ namespace Network
             ~Acceptor();
 
             Socket accept();
+            void shutdown();
 
         private:
             std::unique_ptr<Impl::Acceptor> impl;
@@ -73,6 +74,7 @@ namespace Network
             ~Connector();
 
             Socket connect();
+            void shutdown();
 
         private:
             std::unique_ptr<Impl::Connector> impl;
