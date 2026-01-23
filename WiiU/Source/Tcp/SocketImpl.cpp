@@ -18,12 +18,7 @@ namespace Network
 {
     namespace Tcp::Impl
     {
-        Socket::Socket(int fd) : fd(fd)
-        {
-            int opt = 1;
-            int res = ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
-            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_REUSEADDR)");
-        }
+        Socket::Socket(int fd) : fd(fd) {}
 
         Socket::~Socket()
         {

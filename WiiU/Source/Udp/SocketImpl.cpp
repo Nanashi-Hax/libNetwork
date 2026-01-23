@@ -21,22 +21,22 @@ namespace Network
             fd = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
             if(fd < 0) throw std::system_error(errno, std::generic_category(), "socket()");
 
+            int opt = 1;
+            int res = ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
+            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_REUSEADDR)");
+
             sockaddr_in addr;
             std::memset(&addr, 0, sizeof(addr));
             addr.sin_family = AF_INET;
             addr.sin_addr.s_addr = htonl(INADDR_ANY);
             addr.sin_port = htons(port);
 
-            int res = ::bind(fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
+            res = ::bind(fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
             if(res < 0)
             {
                 ::close(fd);
                 throw std::system_error(errno, std::generic_category(), "bind()");
             }
-
-            int opt = 1;
-            res = ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
-            if(res < 0) throw std::system_error(errno, std::generic_category(), "setsockopt(SO_REUSEADDR)");
         }
 
         Socket::~Socket()

@@ -13,13 +13,17 @@ namespace Network::Tcp::Impl
         s = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         if(s == INVALID_SOCKET) throw std::system_error(WSAGetLastError(), std::system_category(), "socket()");
 
+        int opt = 1;
+        int res = ::setsockopt(s, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
+        if(res == SOCKET_ERROR) throw std::system_error(WSAGetLastError(), std::system_category(), "setsockopt(SO_REUSEADDR)");
+
         sockaddr_in addr;
         std::memset(&addr, 0, sizeof(addr));
         addr.sin_family = AF_INET;
         addr.sin_addr.s_addr = htonl(INADDR_ANY);
         addr.sin_port = htons(port);
 
-        int res = ::bind(s, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
+        res = ::bind(s, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
         if(res == SOCKET_ERROR)
         {
             ::closesocket(s);
@@ -44,12 +48,12 @@ namespace Network::Tcp::Impl
         if(s == INVALID_SOCKET) throw std::logic_error("Accepter is dead.");
         sockaddr addr;
         int size = sizeof(addr);
-        SOCKET res = ::accept(s, &addr, &size);
-        if(res == INVALID_SOCKET)
+        SOCKET accepted = ::accept(s, &addr, &size);
+        if(accepted == INVALID_SOCKET)
         {
             throw std::system_error(WSAGetLastError(), std::system_category(), "accept()");
         }
-        return Socket(res);
+        return Socket(accepted);
     }
 
     void Acceptor::shutdown()
