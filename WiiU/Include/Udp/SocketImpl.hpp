@@ -5,7 +5,7 @@
 #include <string>
 #include <cstdint>
 
-namespace Network
+namespace Library::Network
 {
     namespace Udp::Impl
     {

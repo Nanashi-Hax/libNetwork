@@ -3,7 +3,7 @@
 
 .SUFFIXES:
 .SECONDARY:
-.PHONY: all clean send
+.PHONY: all clean install
 
 #-------------------------------------------------------------------------------
 # ToolChains
@@ -51,7 +51,7 @@ BuildObjectDir := $(BuildDir)/Object
 BuildDependenceDir := $(BuildDir)/Dependence
 
 CppFile := $(shell find $(SourceDir) -type f -name '*.cpp')
-CppRelative := $(shell realpath --relative-to=$(SourceDir) $(CppFile))
+CppRelative := $(call abs2rel,$(CppFile),$(SourceDir))
 BuildObjectCppFile := $(patsubst %.cpp,$(BuildObjectDir)/Cpp/%.o,$(CppRelative))
 
 DistLibraryFile := $(DistDir)/$(Target).a

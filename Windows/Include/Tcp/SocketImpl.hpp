@@ -4,7 +4,7 @@
 #include <span>
 #include <winsock2.h>
 
-namespace Network
+namespace Library::Network
 {
     namespace Tcp::Impl
     {

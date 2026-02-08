@@ -6,7 +6,7 @@
 #include <memory>
 #include <span>
 
-namespace Network
+namespace Library::Network
 {
     void Initialize();
     void Shutdown();

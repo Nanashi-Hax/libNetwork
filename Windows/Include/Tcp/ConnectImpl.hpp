@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <string>
 
-namespace Network::Tcp::Impl
+namespace Library::Network::Tcp::Impl
 {
     class Acceptor
     {

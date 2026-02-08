@@ -6,7 +6,7 @@
 #include "Impl.hpp"
 #include <memory>
 
-namespace Network
+namespace Library::Network
 {
     void Initialize()
     {

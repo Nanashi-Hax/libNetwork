@@ -6,7 +6,7 @@
 
 #include "Tcp/ConnectImpl.hpp"
 
-namespace Network::Tcp::Impl
+namespace Library::Network::Tcp::Impl
 {
     Acceptor::Acceptor(uint16_t port) : port(port)
     {

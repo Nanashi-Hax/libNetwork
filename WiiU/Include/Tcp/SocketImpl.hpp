@@ -3,7 +3,7 @@
 
 #include <span>
 
-namespace Network
+namespace Library::Network
 {
     namespace Tcp::Impl
     {

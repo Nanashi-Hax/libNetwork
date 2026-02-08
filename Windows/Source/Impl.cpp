@@ -1,7 +1,7 @@
 #include <winsock2.h>
 #include <system_error>
 
-namespace Network
+namespace Library::Network
 {
     namespace Impl
     {

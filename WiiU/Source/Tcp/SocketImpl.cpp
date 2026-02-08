@@ -14,7 +14,7 @@
 
 #include <whb/log.h>
 
-namespace Network
+namespace Library::Network
 {
     namespace Tcp::Impl
     {

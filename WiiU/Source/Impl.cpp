@@ -1,4 +1,4 @@
-namespace Network
+namespace Library::Network
 {
     namespace Impl
     {

@@ -6,7 +6,7 @@
 
 #include "Udp/SocketImpl.hpp"
 
-namespace Network
+namespace Library::Network
 {
     namespace Udp::Impl
     {
