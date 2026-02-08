@@ -125,7 +125,7 @@ namespace Library::Network
         int res = ::recv(fd, data, size, 0);
         if(res < 0)
         {
-            if(errno == EAGAIN || errno == EWOULDBLOCK) return {ResultType::Disconnected, 0};
+            if(errno == EAGAIN || errno == EWOULDBLOCK) return {ResultType::WouldBlock, 0};
             return {ResultType::Error, 0};
         }
 
