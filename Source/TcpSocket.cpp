@@ -24,14 +24,30 @@ namespace Library::Network
         ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt));
     }
 
-    TcpSocket::~TcpSocket()
+    TcpSocket::~TcpSocket() noexcept
     {
         if(fd < 0) return;
 
         ::close(fd);
     }
 
-    bool TcpSocket::listen(uint16_t port)
+    TcpSocket::TcpSocket(TcpSocket&& other) noexcept : fd(other.fd)
+    {
+        other.fd = -1;
+    }
+
+    TcpSocket& TcpSocket::operator=(TcpSocket&& other) noexcept
+    {
+        if (this != &other)
+        {
+            if (fd != -1) ::close(fd);
+            fd = other.fd;
+            other.fd = -1;
+        }
+        return *this;
+    }
+
+    bool TcpSocket::listen(uint16_t port) noexcept
     {
         if(fd < 0) return false;
 
@@ -50,7 +66,7 @@ namespace Library::Network
         return true;
     }
 
-    std::optional<TcpSocket> TcpSocket::accept()
+    std::optional<TcpSocket> TcpSocket::accept() noexcept
     {
         if(fd < 0) return std::nullopt;
 
@@ -72,7 +88,7 @@ namespace Library::Network
         return TcpSocket(accepted);
     }
 
-    bool TcpSocket::connect(std::string host, uint16_t port)
+    bool TcpSocket::connect(std::string host, uint16_t port) noexcept
     {
         if(fd < 0) return false;
 
@@ -101,8 +117,7 @@ namespace Library::Network
         return true;
     }
 
-
-    Result TcpSocket::send(const void* data, size_t size)
+    Result TcpSocket::send(const void* data, size_t size) noexcept
     {
         if(fd < 0) return {ResultType::Error, 0};
 
@@ -118,7 +133,7 @@ namespace Library::Network
         return {ResultType::Data, static_cast<size_t>(res)};
     }
 
-    Result TcpSocket::recv(void* data, size_t size)
+    Result TcpSocket::recv(void* data, size_t size) noexcept
     {
         if(fd < 0) return {ResultType::Error, 0};
 
@@ -135,7 +150,7 @@ namespace Library::Network
     }
 
 
-    bool TcpSocket::waitRead(int timeoutMs)
+    bool TcpSocket::waitRead(int timeoutMs) noexcept
     {
         if(fd < 0) return false;
 
@@ -148,7 +163,7 @@ namespace Library::Network
         return (res > 0 && (pfd.revents & POLLIN));
     }
 
-    bool TcpSocket::waitWrite(int timeoutMs)
+    bool TcpSocket::waitWrite(int timeoutMs) noexcept
     {
         if(fd < 0) return false;
 
@@ -162,7 +177,7 @@ namespace Library::Network
     }
 
 
-    void TcpSocket::shutdown()
+    void TcpSocket::shutdown() noexcept
     {
         if(fd < 0) return;
         
@@ -171,5 +186,5 @@ namespace Library::Network
         fd = -1;
     }
 
-    TcpSocket::TcpSocket(int fd) : fd(fd) {}
+    TcpSocket::TcpSocket(int fd) noexcept : fd(fd) {}
 }

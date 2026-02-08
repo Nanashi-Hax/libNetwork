@@ -12,22 +12,28 @@ namespace Library::Network
     {
     public:
         TcpSocket();
-        ~TcpSocket();
+        ~TcpSocket() noexcept;
 
-        bool listen(uint16_t port);
-        std::optional<TcpSocket> accept();
-        bool connect(std::string host, uint16_t port);
+        TcpSocket(const TcpSocket&) = delete;
+        TcpSocket& operator=(const TcpSocket&) = delete;
 
-        Result send(const void*, size_t);
-        Result recv(void*, size_t);
+        TcpSocket(TcpSocket&& other) noexcept;
+        TcpSocket& operator=(TcpSocket&& other) noexcept;
 
-        bool waitRead(int timeoutMs);
-        bool waitWrite(int timeoutMs);
+        bool listen(uint16_t port) noexcept;
+        std::optional<TcpSocket> accept() noexcept;
+        bool connect(std::string host, uint16_t port) noexcept;
 
-        void shutdown();
+        Result send(const void*, size_t) noexcept;
+        Result recv(void*, size_t) noexcept;
+
+        bool waitRead(int timeoutMs) noexcept;
+        bool waitWrite(int timeoutMs) noexcept;
+
+        void shutdown() noexcept;
 
     private:
-        TcpSocket(int fd);
+        TcpSocket(int fd) noexcept;
         int fd;
     };
 }
