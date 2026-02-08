@@ -1,4 +1,5 @@
 #include "Network/UdpSocket.hpp"
+#include "Network/Result.hpp"
 
 #include <optional>
 #include <sys/socket.h>
@@ -56,9 +57,9 @@ namespace Library::Network
         return true;
     }
 
-    std::optional<int> UdpSocket::sendTo(std::string const & host, uint16_t port, void const * data, size_t size)
+    Result UdpSocket::sendTo(std::string const & host, uint16_t port, void const * data, size_t size)
     {
-        if(fd < 0) return std::nullopt;
+        if(fd < 0) return {ResultType::Error, 0};
 
         sockaddr_in addr;
         std::memset(&addr, 0, sizeof(addr));
@@ -67,23 +68,32 @@ namespace Library::Network
         addr.sin_port = htons(port);
 
         int res = ::sendto(fd, data, size, 0, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
-        if(res < 0) return std::nullopt;
-        return res;
+        if(res < 0)
+        {
+            if(errno == EAGAIN || errno == EWOULDBLOCK) return {ResultType::WouldBlock, 0};
+            return {ResultType::Error, 0};
+        }
+        
+        return {ResultType::Data, static_cast<size_t>(res)};
     }
 
-    std::optional<int> UdpSocket::recvFrom(std::string & host, uint16_t & port, void * data, size_t size)
+    Result UdpSocket::recvFrom(std::string & host, uint16_t & port, void * data, size_t size)
     {
-        if(fd < 0) return std::nullopt;
+        if(fd < 0) return {ResultType::Error, 0};
 
         sockaddr_in addr;
         socklen_t addrSize = sizeof(addr);
 
         int res = ::recvfrom(fd, data, size, 0, reinterpret_cast<sockaddr*>(&addr), &addrSize);
-        if(res < 0) return std::nullopt;
+        if(res < 0)
+        {
+            if(errno == EAGAIN || errno == EWOULDBLOCK) return {ResultType::WouldBlock, 0};
+            return {ResultType::Error, 0};
+        }
 
         host = inet_ntoa(addr.sin_addr);
         port = ntohs(addr.sin_port);
-        return res;
+        return {ResultType::Data, static_cast<size_t>(res)};
     }
 
     bool UdpSocket::waitRead(int timeoutMs)

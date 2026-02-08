@@ -1,4 +1,5 @@
 #include "Network/TcpSocket.hpp"
+#include "Network/Result.hpp"
 
 #include <optional>
 #include <sys/socket.h>
@@ -101,32 +102,36 @@ namespace Library::Network
     }
 
 
-    std::optional<int> TcpSocket::send(const void* data, size_t size)
+    Result TcpSocket::send(const void* data, size_t size)
     {
-        if(fd < 0) return std::nullopt;
+        if(fd < 0) return {ResultType::Error, 0};
 
         int res = ::send(fd, data, size, 0);
         if(res < 0)
         {
-            if(errno == EAGAIN || errno == EWOULDBLOCK) return 0;
-            return std::nullopt;
+            if(errno == EAGAIN || errno == EWOULDBLOCK) return {ResultType::WouldBlock, 0};
+            return {ResultType::Error, 0};
         }
 
-        return res;
+        if(res == 0) return {ResultType::Disconnected, 0};
+
+        return {ResultType::Data, static_cast<size_t>(res)};
     }
 
-    std::optional<int> TcpSocket::recv(void* data, size_t size)
+    Result TcpSocket::recv(void* data, size_t size)
     {
-        if(fd < 0) return std::nullopt;
+        if(fd < 0) return {ResultType::Error, 0};
 
         int res = ::recv(fd, data, size, 0);
         if(res < 0)
         {
-            if(errno == EAGAIN || errno == EWOULDBLOCK) return 0;
-            return std::nullopt;
+            if(errno == EAGAIN || errno == EWOULDBLOCK) return {ResultType::Disconnected, 0};
+            return {ResultType::Error, 0};
         }
 
-        return res;
+        if(res == 0) return {ResultType::Disconnected, 0};
+
+        return {ResultType::Data, static_cast<size_t>(res)};
     }
 
 

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <optional>
 #include <string>
+#include "Network/Result.hpp"
 
 namespace Library::Network
 {
@@ -17,8 +18,8 @@ namespace Library::Network
         std::optional<TcpSocket> accept();
         bool connect(std::string host, uint16_t port);
 
-        std::optional<int> send(const void*, size_t);
-        std::optional<int> recv(void*, size_t);
+        Result send(const void*, size_t);
+        Result recv(void*, size_t);
 
         bool waitRead(int timeoutMs);
         bool waitWrite(int timeoutMs);
