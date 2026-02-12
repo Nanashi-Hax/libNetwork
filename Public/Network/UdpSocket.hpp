@@ -16,11 +16,11 @@ namespace Library::Network
 
         bool bind(uint16_t port);
 
-        Result sendTo(std::string const & host, uint16_t port, void const * data, size_t size);
-        Result recvFrom(std::string & host, uint16_t & port, void * data, size_t size);
+        Result sendTo(std::string const & host, uint16_t port, void const * data, size_t size) noexcept;
+        Result recvFrom(std::string & host, uint16_t & port, void * data, size_t size) noexcept;
 
-        bool waitRead(int timeoutMs);
-        bool waitWrite(int timeoutMs);
+        bool waitRead(int timeoutMs) noexcept;
+        bool waitWrite(int timeoutMs) noexcept;
 
         void shutdown();
 

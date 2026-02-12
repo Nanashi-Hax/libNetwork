@@ -20,7 +20,8 @@ namespace Library::Network
         TcpSocket(TcpSocket&& other) noexcept;
         TcpSocket& operator=(TcpSocket&& other) noexcept;
 
-        bool listen(uint16_t port) noexcept;
+        bool listen(uint16_t port);
+
         std::optional<TcpSocket> accept() noexcept;
         bool connect(std::string host, uint16_t port) noexcept;
 
