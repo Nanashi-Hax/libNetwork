@@ -37,7 +37,7 @@ SourceDir := $(TopDir)/Source
 IncludeDir := $(TopDir)/Include $(TopDir)/Public
 PublicDir := $(TopDir)/Public
 BuildDir := $(TopDir)/Build
-DistDir := $(TopDir)/Dist
+DestDir := $(TopDir)/Dest
 
 #-------------------------------------------------------------------------------
 # Macros
@@ -54,7 +54,7 @@ CppFile := $(shell find $(SourceDir) -type f -name '*.cpp')
 CppRelative := $(call abs2rel,$(CppFile),$(SourceDir))
 BuildObjectCppFile := $(patsubst %.cpp,$(BuildObjectDir)/Cpp/%.o,$(CppRelative))
 
-DistLibraryFile := $(DistDir)/$(Target).a
+DestLibraryFile := $(DestDir)/$(Target).a
 InstallLibDir := $(User)/Lib
 InstallIncDir := $(User)/Include
 
@@ -88,13 +88,13 @@ LinkerFlags := $(LinkerScript) $(Specs) -g
 #-------------------------------------------------------------------------------
 # Rules
 #-------------------------------------------------------------------------------
-all: $(DistLibraryFile)
+all: $(DestLibraryFile)
 
 $(BuildObjectDir)/Cpp/%.o: $(SourceDir)/%.cpp
 	@echo $(notdir $<)
 	$(call cpp2o,$<,$@,$(BuildDependenceDir)/$*.d,$(CppFlags))
 
-$(DistDir)/%.a: $(BuildObjectCppFile)
+$(DestDir)/%.a: $(BuildObjectCppFile)
 	@echo linking ... $(notdir $@)
 	$(call o2a,$^,$@)
 
@@ -102,9 +102,9 @@ $(DistDir)/%.a: $(BuildObjectCppFile)
 
 clean:
 	@echo clean ...
-	@rm -rf $(BuildDir) $(DistDir)
+	@rm -rf $(BuildDir) $(DestDir)
 
-install: $(DistLibraryFile)
+install: $(DestLibraryFile)
 	@echo installing ... $(notdir $<)
 	@mkdir -p $(InstallLibDir)
 	@mkdir -p $(InstallIncDir)

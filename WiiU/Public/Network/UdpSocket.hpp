@@ -2,8 +2,8 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <optional>
 #include <string>
+#include "Network/Define.hpp"
 #include "Network/Result.hpp"
 
 namespace Library::Network
@@ -25,6 +25,6 @@ namespace Library::Network
         void shutdown();
 
     private:
-        int fd;
+        SocketFD fd;
     };
 }

@@ -79,10 +79,10 @@ namespace Library::Network
         if(accepted < 0) return std::nullopt;
 
         int flags = ::fcntl(accepted, F_GETFL, 0);
-        if (flags < 0)  return std::nullopt;
+        if (flags < 0) return std::nullopt;
         flags |= O_NONBLOCK;
         int res = ::fcntl(accepted, F_SETFL, flags | O_NONBLOCK);
-        if(res < 0)  return std::nullopt;
+        if(res < 0) return std::nullopt;
 
         int v = 1;
         res = ::setsockopt(accepted, IPPROTO_TCP, TCP_NODELAY, &v, sizeof(v));
@@ -189,5 +189,5 @@ namespace Library::Network
         fd = -1;
     }
 
-    TcpSocket::TcpSocket(int fd) noexcept : fd(fd) {}
+    TcpSocket::TcpSocket(SocketFD fd) noexcept : fd(fd) {}
 }

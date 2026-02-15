@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <optional>
 #include <string>
+#include "Network/Define.hpp"
 #include "Network/Result.hpp"
 
 namespace Library::Network
@@ -34,7 +35,7 @@ namespace Library::Network
         void shutdown() noexcept;
 
     private:
-        TcpSocket(int fd) noexcept;
-        int fd;
+        TcpSocket(SocketFD fd) noexcept;
+        SocketFD fd;
     };
 }
